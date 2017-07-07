@@ -12,12 +12,4 @@ $content = file_get_contents($url);
 $content = iconv('gbk','utf-8',$content);
 echo $content;
 
-
-//header('content-type:text/html;charset=utf-8');
-//$maxid = isset($_GET['maxid']) ? $_GET['maxid'] : 1;
-//$url = 'http://apps.iyuba.com/minutes/titleNewApi.jsp?maxid='+. $maxid+'&fromat=xml&type=android';
-//$content = file_get_contents($url);
-//$content = iconv('gbk','utf-8',$content);
-//
-//echo $content;
 ?>
