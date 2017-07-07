@@ -24,7 +24,7 @@
 		}
 		li div img{
 			width: 225px;
-			display: block;
+			display: inline-block;
 		}
 	</style>
 </head>
@@ -41,45 +41,59 @@
 			var ali = document.getElementsByTagName('li');
 			var ilen = ali.length;
 			var ipage = 1;
-			var ajax = new XMLHttpRequest;
-			ajax.open('get','php/ex1.php?cpage='+ipage);
-			ajax.send();
-			ajax.onload = function(){				
-//				console.log(ajax.responseText);//json字符串	
-				var data = JSON.parse(ajax.responseText);//转对象
-//				console.log(data);
-				for(var i=0;i<data.length;i++){
-					console.log(1)
-					var _index = getShort();
-					var oDiv = document.createElement('div');
-					var oImg = document.createElement('img');
-					oImg.src = data[i].preview;
-					oImg.style.width = '225px';
-					oImg.style.height = data[i].height*(225/data[i].width) + 'px';
-					oDiv.appendChild(oImg);
-					var oP = document.createElement('p');
-					oP.innerHTML = data[i].title;
-					oDiv.appendChild(oP);
-					ali[_index].appendChild(oDiv);
+			var b = true;
+			getlist();
+			
+			function getlist(){
+				var ajax = new XMLHttpRequest;
+				ajax.open('get','php/ex1.php?cpage='+ipage);
+				ajax.send();
+				ajax.onload = function(){				
+	//				console.log(ajax.responseText);//json字符串	
+					var data = JSON.parse(ajax.responseText);
+	//				console.log(data);
+					if(!data.length){
+						return ;
+					}
+					for(var i=0;i<data.length;i++){
+						var _index = getShort();
+						var oDiv = document.createElement('div');
+						var oImg = document.createElement('img');
+						oImg.src = data[i].preview;
+						oImg.style.width = '225px';
+						oImg.style.height = data[i].height*(225/data[i].width) + 'px';
+						oDiv.appendChild(oImg);
+						oImg.onerror = function(){
+							console.log(oImg.parentNode);
+							oImg.parentNode.style.display = 'none';
+						}
+						var oP = document.createElement('p');
+						oP.innerHTML = data[i].title;
+						oDiv.appendChild(oP);
+						ali[_index].appendChild(oDiv);
+					}
+					b = true;
 				}
 			}
-			/*ajax.onload = function(data){		
-				console.log(data);//ProgressEvent对象，不可以直接用data
-				console.log(data.srcElement.response);//JSON字符串
-				var arr = JSON.parse(data.srcElement.response);//字符串转对象
-				for(var i=0;i<arr.length;i++){
-					var _index = getShort();
-					var oDiv = document.createElement('div');
-					var oImg = document.createElement('img');
-					oImg.src = arr[i].preview;
-					oDiv.appendChild(oImg);
-					var oP = document.createElement('p');
-					oP.innerHTML = arr[i].title;
-					oDiv.appendChild(oP);
-					ali[_index].appendChild(oDiv);
+			
+			window.onscroll = function(){
+				//li自身的高加top值小于滚动条滚动的高加可视区的高，代表加载到最后了。
+				var _index = getShort();
+				var oli = ali[_index];
+				var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
+				//判断是否加载
+				if(getTop(oli)+oli.offsetHeight<document.documentElement.clientHeight+scrollTop){
+//					alert(1);
+					if(b){
+						b = false;
+						ipage++;
+						getlist();
+					}
 				}
-			}*/
+			}
+			
 			function getShort(){
+				//获取高度最小li索引
 				var index = 0;
 				var ih = ali[index].offsetHeight;
 				for(var i=1;i<ilen;i++){
@@ -90,6 +104,17 @@
 				}
 				return index;
 			}
+			
+			function getTop(obj){
+				//获取最小高度li
+				var itop = 0;
+				while(obj){
+					itop += obj.offsetTop;
+					obj = obj.offsetParent;
+				}
+				return itop;
+			}
+			
 		}
 	</script>
 </body>
