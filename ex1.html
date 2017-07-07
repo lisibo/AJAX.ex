@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Document</title>
+	<style>
+		body{
+			margin: 0;
+		}
+		#ul1{
+			width: 1080px;
+			margin: 0 auto;
+		}
+		li{
+			width: 247px;
+			list-style: none;
+			float: left;
+			margin-right: 10px;
+		}
+		li div{
+			border: 1px solid #000;
+			padding: 10px;
+			margin-bottom: 10px;
+		}
+		li div img{
+			width: 225px;
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<ul id="ul1">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+	<script type="text/javascript">
+		window.onload = function(){
+			var oul = document.getElementById('ul1');
+			var ali = document.getElementsByTagName('li');
+			var ilen = ali.length;
+			var ipage = 1;
+			var ajax = new XMLHttpRequest;
+			ajax.open('get','php/ex1.php?cpage='+ipage);
+			ajax.send();
+			ajax.onload = function(){				
+//				console.log(ajax.responseText);//json字符串	
+				var data = JSON.parse(ajax.responseText);//转对象
+//				console.log(data);
+				for(var i=0;i<data.length;i++){
+					console.log(1)
+					var _index = getShort();
+					var oDiv = document.createElement('div');
+					var oImg = document.createElement('img');
+					oImg.src = data[i].preview;
+					oImg.style.width = '225px';
+					oImg.style.height = data[i].height*(225/data[i].width) + 'px';
+					oDiv.appendChild(oImg);
+					var oP = document.createElement('p');
+					oP.innerHTML = data[i].title;
+					oDiv.appendChild(oP);
+					ali[_index].appendChild(oDiv);
+				}
+			}
+			/*ajax.onload = function(data){		
+				console.log(data);//ProgressEvent对象，不可以直接用data
+				console.log(data.srcElement.response);//JSON字符串
+				var arr = JSON.parse(data.srcElement.response);//字符串转对象
+				for(var i=0;i<arr.length;i++){
+					var _index = getShort();
+					var oDiv = document.createElement('div');
+					var oImg = document.createElement('img');
+					oImg.src = arr[i].preview;
+					oDiv.appendChild(oImg);
+					var oP = document.createElement('p');
+					oP.innerHTML = arr[i].title;
+					oDiv.appendChild(oP);
+					ali[_index].appendChild(oDiv);
+				}
+			}*/
+			function getShort(){
+				var index = 0;
+				var ih = ali[index].offsetHeight;
+				for(var i=1;i<ilen;i++){
+					if(ali[i].offsetHeight<ih){
+						index = i;
+						ih = ali[i].offsetHeight;
+					}
+				}
+				return index;
+			}
+		}
+	</script>
+</body>
+</html>
