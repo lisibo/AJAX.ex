@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Document</title>
+	<style>
+		li a{
+			color: #333;
+		}
+		#btn:hover{
+			background: #ccc;
+		}
+	</style>
+</head>
+<body>
+	<input type="text" name="txt" id="txt" value="" />
+	<input type="button" name="btn" id="btn" value="搜索" />
+	<ul id="list">
+		
+	</ul>
+	<script type="text/javascript">
+		var txt = document.getElementById('txt');
+		var btn = document.getElementById('btn');
+		var list = document.getElementById('list');
+		let scr = null;
+		txt.focus();
+		txt.oninput = function(){
+			if(this.value != ''){
+				scr = document.createElement('script');
+				scr.type = 'text/javascript';
+				scr.src = 'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd='+txt.value+'&cb=fn';
+				document.getElementsByTagName('head')[0].appendChild(scr);
+//				直接输入内容跳转
+//				open('https://www.baidu.com/s?wd='+this.value+'','_self');
+//				this.value = '';
+			}else{
+				list.style.display = 'none';
+			}
+		}
+		btn.onclick = function(){
+			let val = txt.value;
+			console.log(val)
+			open('https://www.baidu.com/s?wd='+val+'','_blank');
+		}
+		txt.onblur = function(){
+			let _this = this;
+			setTimeout(function(){
+				_this.value = '';
+				list.style.display = 'none';
+			},500)
+		}
+		function fn(data){
+			console.table(data);
+			if(data.s.length){
+				list.style.display = 'block';
+				let html = '';
+				data.s.forEach(function(e,i){
+					html += '<li><a href="https://www.baidu.com/s?wd='+data.s[i]+'" target:"_blank">'+e+'</a></li>';
+				})
+				list.innerHTML = html;
+			}
+		}
+		
+	</script>
+</body>
+</html>
