@@ -30,6 +30,7 @@
 				scr.type = 'text/javascript';
 				scr.src = 'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd='+txt.value+'&cb=fn';
 				document.getElementsByTagName('head')[0].appendChild(scr);
+				scr.remove();
 //				直接输入内容跳转
 //				open('https://www.baidu.com/s?wd='+this.value+'','_self');
 //				this.value = '';
